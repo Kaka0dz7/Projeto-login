@@ -1,24 +1,54 @@
 <?php
-include 'conexao.php';
+// 1. Inicia a sessão para podermos manter o usuário logado depois
+session_start();
 
-$email = $_POST['email'];
-$senha = $_POST['senha'];
+// 2. Suas credenciais do Supabase (O ideal é puxar de um arquivo .env)
+$supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
+$apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFydWdqbXlrcWJueGJtaXZxa25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2ODk2NTAsImV4cCI6MjA5MTI2NTY1MH0.QfUUjgXhZ0gcnJf43J0vQJuc8382YcndvDZTUNR2BZc';
 
-$sql = "SELECT * FROM usuarios WHERE email = :email";
-$stmt = $pdo->prepare($sql);
-$stmt->execute([':email' => $email]);
+// Simulando os dados que viriam do seu formulário HTML: $_POST['email']
+$email = '';
+$password = '';
 
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+// 3. Monta a URL da API de Autenticação do Supabase
+$url = $supabaseUrl . '/auth/v1/token?grant_type=password';
 
-if ($user) {
-    $senha_decode = base64_decode($user['senha']);
+// 4. Prepara os dados no formato JSON
+$dados = json_encode([
+    "email" => $email,
+    "password" => $senha
+]);
 
-    if ($senha === $senha_decode) {
-        echo "Login bem-sucedido!";
-    } else {
-        echo "Senha incorreta!";
-    }
+// 5. Inicia o cURL (a ferramenta do PHP para fazer requisições API)
+$ch = curl_init($url);
+
+// Configurações do cURL
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retornar a resposta como texto
+curl_setopt($ch, CURLOPT_POST, true);           // Método POST
+curl_setopt($ch, CURLOPT_POSTFIELDS, $dados);   // Enviando o e-mail e senha
+curl_setopt($ch, CURLOPT_HTTPHEADER, [          // Cabeçalhos obrigatórios
+    'apikey: ' . $apiKey,
+    'Content-Type: application/json'
+]);
+
+// 6. Executa a requisição e fecha a conexão
+$resposta = curl_exec($ch);
+curl_close($ch);
+
+// 7. Transforma a resposta do Supabase de volta para um Array do PHP
+$resultado = json_decode($resposta, true);
+
+// 8. Verifica se deu certo ou errado
+if (isset($resultado['error'])) {
+    echo "Erro ao logar: " . $resultado['error_description'];
 } else {
-    echo "Usuário não encontrado!";
+    echo "Login feito com sucesso!";
+    
+    // Salva o token do usuário na sessão do PHP para ele não precisar logar de novo
+    $_SESSION['usuario_token'] = $resultado['access_token'];
+    
+    // Aqui você pode redirecionar o usuário para o painel
+    // header("Location: painel.php");
+    // exit;
 }
 ?>
