@@ -1,6 +1,6 @@
 <?php
 // Conecta ao banco de dados
-include("conexao.php");
+include("login.php");
 
 // Recebe os dados do formulário
 $nome = $_POST['nome'];
