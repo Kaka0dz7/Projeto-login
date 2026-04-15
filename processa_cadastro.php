@@ -1,7 +1,7 @@
 <?php
 // Configurações do Supabase
-$supabaseUrl = 'SUA_URL_DO_SUPABASE';
-$supabaseKey = 'SUA_CHAVE_ANON_PUBLIC';
+$supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
+$supabaseKey = 'sb_publishable_ESqH6xevL62I-WvRC3wUXw_db6IqQXV';
 $tableName   = 'usuarios';
 
 // Recebe os dados do formulário
