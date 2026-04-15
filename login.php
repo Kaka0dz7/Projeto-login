@@ -4,7 +4,7 @@ session_start();
 
 // 2. Suas credenciais do Supabase (O ideal é puxar de um arquivo .env)
 $supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
-$apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFydWdqbXlrcWJueGJtaXZxa25lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2ODk2NTAsImV4cCI6MjA5MTI2NTY1MH0.QfUUjgXhZ0gcnJf43J0vQJuc8382YcndvDZTUNR2BZc';
+$apiKey = 'sb_publishable_ESqH6xevL62I-WvRC3wUXw_db6IqQXV';
 
 // Simulando os dados que viriam do seu formulário HTML: $_POST['email']
 $email = '';
