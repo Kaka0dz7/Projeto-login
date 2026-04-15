@@ -45,7 +45,7 @@ if ($httpCode == 201) {
 } else {
     echo "Erro ao cadastrar no Supabase. Código HTTP: " . $httpCode;
     // Para debug, você pode imprimir o $response:
-    // var_dump($response);
+     var_dump($response);
 }
 ?>    
         
