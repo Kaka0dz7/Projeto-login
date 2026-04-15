@@ -1,39 +1,51 @@
 <?php
-// Conecta ao banco de dados (certifique-se que $conn está definido aqui)
-include("conexao.php"); 
+// Configurações do Supabase
+$supabaseUrl = 'SUA_URL_DO_SUPABASE';
+$supabaseKey = 'SUA_CHAVE_ANON_PUBLIC';
+$tableName   = 'usuarios';
 
 // Recebe os dados do formulário
 $nome  = $_POST['nome'];
 $email = $_POST['email'];
 $senha = $_POST['senha'];
 
-// Criptografa a senha
+// Criptografa a senha (sempre mantenha isso!)
 $senhaSegura = password_hash($senha, PASSWORD_DEFAULT);
 
-// 1. Usamos "?" como placeholders para evitar SQL Injection
-$sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+// Prepara os dados para o JSON
+$dados = [
+    'nome'  => $nome,
+    'email' => $email,
+    'senha' => $senhaSegura
+];
 
-// 2. Prepara a query
-$stmt = mysqli_prepare($conn, $sql);
+// Inicializa o cURL para fazer a requisição HTTP POST
+$ch = curl_init($supabaseUrl . "/rest/v1/" . $tableName);
 
-if ($stmt) {
-    // 3. Vincula os parâmetros ("sss" significa que são 3 strings)
-    mysqli_stmt_bind_param($stmt, "sss", $nome, $email, $senhaSegura);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => json_encode($dados),
+    CURLOPT_HTTPHEADER     => [
+        "apikey: $supabaseKey",
+        "Authorization: Bearer $supabaseKey",
+        "Content-Type: application/json",
+        "Prefer: return=minimal" // Opcional: economiza banda não retornando o objeto criado
+    ],
+]);
 
-    // 4. Executa
-    if (mysqli_stmt_execute($stmt)) {
-        // Redireciona ANTES de imprimir qualquer texto na tela
-        header("Location: login.php?sucesso=1");
-        exit(); // Sempre use exit após um header de redirecionamento
-    } else {
-        echo "Erro ao cadastrar: " . mysqli_error($conn);
-    }
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
 
-    mysqli_stmt_close($stmt);
+// No Supabase, o código 201 significa "Criado com sucesso"
+if ($httpCode == 201) {
+    header("Location: login.php?sucesso=1");
+    exit();
 } else {
-    echo "Erro na preparação do banco de dados.";
+    echo "Erro ao cadastrar no Supabase. Código HTTP: " . $httpCode;
+    // Para debug, você pode imprimir o $response:
+    // var_dump($response);
 }
-
-mysqli_close($conn);
-?>      
+?>    
         
