@@ -1,6 +1,6 @@
 <?php
 // Configurações do Supabase
-$supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
+$supabaseUrl = 'postgresql://postgres:[YOUR-PASSWORD]@db.qrugjmykqbnxbmivqkne.supabase.co:5432/postgres';
 $supabaseKey = 'sb_publishable_ESqH6xevL62I-WvRC3wUXw_db6IqQXV';
 $tableName   = 'usuarios';
 
