@@ -48,7 +48,7 @@ if (isset($resultado['error'])) {
     $_SESSION['usuario_token'] = $resultado['access_token'];
     
     // Aqui você pode redirecionar o usuário para o painel
-    // header("Location: painel.php");
-    // exit;
+     header("Location: index.html");
+     exit;
 }
 ?>
