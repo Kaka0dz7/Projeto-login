@@ -1,6 +1,6 @@
 <?php
 // Configurações do Supabase
-$supabaseUrl = 'postgresql://postgres:[YOUR-PASSWORD]@db.qrugjmykqbnxbmivqkne.supabase.co:5432/postgres';
+$supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
 $supabaseKey = 'sb_publishable_ESqH6xevL62I-WvRC3wUXw_db6IqQXV';
 $tableName   = 'usuarios';
 
@@ -45,7 +45,7 @@ if ($httpCode == 201) {
 } else {
     echo "Erro ao cadastrar no Supabase. Código HTTP: " . $httpCode;
     // Para debug, você pode imprimir o $response:
-     var_dump($response);
+    // var_dump($response);
 }
 ?>    
         
