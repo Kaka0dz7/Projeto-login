@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($response->getStatusCode() === 200) {
             echo "Usuário cadastrado com sucesso no sistema de Autenticação!";
-            echo "<br><a href='login.php'>Ir para o Login</a>";
+            echo "<br><a href='login.html'>Ir para o Login</a>";
         }
     } catch (\GuzzleHttp\Exception\ClientException $e) {
         $responseBody = $e->getResponse()->getBody()->getContents();
