@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h2>Entrar na Conta</h2>
+
+    <!-- O formulário envia os dados para o arquivo login.php via POST -->
+    <form action="login.php" method="POST">
+
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Senha:</label>
+        <input type="password" name="senha" required>
+
+        <button type="submit">Entrar</button>
+
+    </form>
+
+    <!-- Link para voltar para a tela de cadastro -->
+    <a href="index.html">Ainda não tenho conta</a>
+
+</body>
+</html>
