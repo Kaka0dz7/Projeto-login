@@ -1,54 +1,40 @@
 <?php
-// 1. Inicia a sessão para podermos manter o usuário logado depois
 session_start();
+require 'config.php'; // Adicione isso para carregar a URL e a KEY
 
-// 2. Suas credenciais do Supabase (O ideal é puxar de um arquivo .env)
-$supabaseUrl = 'https://qrugjmykqbnxbmivqkne.supabase.co';
-$apiKey = 'sb_publishable_ESqH6xevL62I-WvRC3wUXw_db6IqQXV';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $senha = $_POST['senha'];
 
-// Simulando os dados que viriam do seu formulário HTML: $_POST['email']
-$email = '';
-$password = '';
+    // O endpoint de login do Supabase
+    $url = $supabaseUrl . '/auth/v1/token?grant_type=password';
 
-// 3. Monta a URL da API de Autenticação do Supabase
-$url = $supabaseUrl . '/auth/v1/token?grant_type=password';
+    $dados = json_encode([
+        "email" => $email,
+        "password" => $senha
+    ]);
 
-// 4. Prepara os dados no formato JSON
-$dados = json_encode([
-    "email" => $email,
-    "password" => $senha
-]);
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $dados);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'apikey: ' . $supabaseKey,
+        'Content-Type: application/json'
+    ]);
 
-// 5. Inicia o cURL (a ferramenta do PHP para fazer requisições API)
-$ch = curl_init($url);
+    $resposta = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-// Configurações do cURL
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Retornar a resposta como texto
-curl_setopt($ch, CURLOPT_POST, true);           // Método POST
-curl_setopt($ch, CURLOPT_POSTFIELDS, $dados);   // Enviando o e-mail e senha
-curl_setopt($ch, CURLOPT_HTTPHEADER, [          // Cabeçalhos obrigatórios
-    'apikey: ' . $apiKey,
-    'Content-Type: application/json'
-]);
+    $resultado = json_decode($resposta, true);
 
-// 6. Executa a requisição e fecha a conexão
-$resposta = curl_exec($ch);
-curl_close($ch);
-
-// 7. Transforma a resposta do Supabase de volta para um Array do PHP
-$resultado = json_decode($resposta, true);
-
-// 8. Verifica se deu certo ou errado
-if (isset($resultado['error'])) {
-    echo "Erro ao logar: " . $resultado['error_description'];
-} else {
-    echo "Login feito com sucesso!";
-    
-    // Salva o token do usuário na sessão do PHP para ele não precisar logar de novo
-    $_SESSION['usuario_token'] = $resultado['access_token'];
-    
-    // Aqui você pode redirecionar o usuário para o painel
-     header("Location: index.html");
-     exit;
+    if ($httpCode !== 200) {
+        echo "Erro ao logar: " . ($resultado['error_description'] ?? 'Credenciais inválidas');
+    } else {
+        $_SESSION['usuario_token'] = $resultado['access_token'];
+        header("Location: index.html");
+        exit;
+    }
 }
 ?>
