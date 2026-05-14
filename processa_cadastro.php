@@ -3,9 +3,24 @@ require 'config.php';
 use GuzzleHttp\Client;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = $_POST['nome'];
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+    $nome = trim($_POST['nome'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $senha = $_POST['senha'] ?? '';
+
+    if ($nome === '' || $email === '' || $senha === '') {
+        echo "Erro ao cadastrar: nome, email e senha são obrigatórios.";
+        exit;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Erro ao cadastrar: email inválido.";
+        exit;
+    }
+
+    if (strlen($senha) < 6) {
+        echo "Erro ao cadastrar: a senha deve ter ao menos 6 caracteres.";
+        exit;
+    }
 
     $client = new Client();
     
@@ -34,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (\GuzzleHttp\Exception\ClientException $e) {
         $responseBody = $e->getResponse()->getBody()->getContents();
         $errorData = json_decode($responseBody, true);
-        echo "Erro ao cadastrar: " . ($errorData['msg'] ?? 'Verifique os dados.');
+        $message = $errorData['msg'] ?? $errorData['error_description'] ?? $errorData['message'] ?? $responseBody;
+        echo "Erro ao cadastrar: " . $message;
     } catch (Exception $e) {
         echo "Erro no servidor: " . $e->getMessage();
     }

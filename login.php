@@ -31,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Salva o token de acesso (crachá do usuário) na sessão do PHP
             $_SESSION['usuario_token'] = $resultado['access_token'];
+            $_SESSION['usuario_email'] = $email;
             
-            // Aqui você pode redirecionar para a página interna do seu sistema (ex: painel.php)
-            // Por enquanto, vamos apenas exibir uma mensagem de sucesso
-            echo "<h2>Login realizado com sucesso!</h2>";
-            echo "<p>Bem-vindo ao sistema.</p>";
+            // Redireciona para o painel com CRUD
+            header('Location: painel.php');
+            exit;
         }
         
     } catch (\GuzzleHttp\Exception\ClientException $e) {
