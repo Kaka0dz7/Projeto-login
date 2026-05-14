@@ -12,7 +12,7 @@ $client = new Client();
 $error = null;
 $nome = '';
 $email = '';
-$id = null;
+$id  = null;
 
 if (!empty($_GET['id'])) {
     $id = $_GET['id'];
